@@ -1,0 +1,52 @@
+name: Auto commit
+
+on:
+  push:
+    branches:
+      - master
+
+  schedule:
+    - cron: '0 7,8,9,10,11 * * *'
+
+jobs:
+  auto_commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Modify last update
+        run: |
+          d=`date '+%Y-%m-%dT%H:%M:%SZ'`
+          echo $d > LAST_UPDATED
+
+      - name: Commit changes
+        run: |
+          git config --local user.email "irfan.fattah.kusuma@student.uty.ac.id"
+          git config --local user.name "Irfan Fattah"
+          git add -A
+
+          arr[0]="feat: 😎 [Go-Green] Feeling good"
+          arr[1]="feat: 🌳 [Go-Green] Plant Trees"
+          arr[2]="feat: 🌷 [Go-Green] Planting Flowers"
+          arr[3]="feat: 🌾 [Go-Green] Planting Rice"
+          arr[4]="feat: 🌻 [Go-Green] Planting Sunflowers"
+          arr[5]="feat: 🍀 [Go-Green] Planting Green Leaves"
+          arr[6]="feat: 🌞 [Go-Green] Photosynthesize"
+          arr[7]="feat: 💰 [Go-Green] Take The Harvest"
+          arr[8]="feat: 🍀 [Go-Green] Github Go Green"
+          arr[9]="feat: 🛍 [Go-Green] Say No To Plastic Bags"
+        
+
+          rand=$[$RANDOM % ${#arr[@]}]
+
+          git commit -m "${arr[$rand]}"
+
+      - name: GitHub Push
+        uses: ad-m/github-push-action@v0.5.0
+        with:
+          force: true
+          directory: '.'
+          github_token: ${{ secrets.GITHUB_TOKEN }}
