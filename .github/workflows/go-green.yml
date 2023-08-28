@@ -6,7 +6,7 @@ on:
       - master
 
   schedule:
-    - cron: '0,10,20,30,40,50 0-23 * * *'
+    - cron: '0 0 * * *'
 
 jobs:
   auto_commit:
@@ -26,8 +26,10 @@ jobs:
 
       - name: Commit changes
         run: |
-          git config --local user.email "irfan.fattah.kusuma@student.uty.ac.id"
-          git config --local user.name "Irfan Fattah"
+          git config --local user.email ${{ secrets.EMAIL }}
+          git config --local user.name ${{ secrets.NAME }}
+          git remote set-url origin https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          git pull --rebase
           git add -A
 
           arr[0]="feat: 😎 [Go-Green] Feeling good"
